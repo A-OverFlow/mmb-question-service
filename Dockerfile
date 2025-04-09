@@ -14,7 +14,7 @@ COPY build.gradle .
 RUN chmod +x gradlew
 
 # 종속성 캐시 생성 (빌드 속도 향상)
-RUN ./gradlew dependencies --no-daemon
+RUN ./gradlew dependencies
 
 # 소스 코드 복사
 COPY src src
