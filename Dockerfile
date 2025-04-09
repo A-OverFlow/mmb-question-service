@@ -7,8 +7,8 @@ WORKDIR /app
 # Gradle 캐시를 활용하기 위해 설정 파일 먼저 복사
 COPY gradlew ./
 COPY gradle gradle
-COPY settings.gradle.kts .
-COPY build.gradle.kts .
+COPY settings.gradle .
+COPY build.gradle .
 
 # Gradle 실행 권한 추가
 RUN chmod +x gradlew
