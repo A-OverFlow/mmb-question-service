@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  question-service:
+    build:
+      dockerfile: ./Dockerfile
+    container_name: mmb-question-service
+    ports:
+      - 8080:${QUESTION_SERVICE_PORT}
+    environment:
+      QUESTION_SERVICE_NAME: ${QUESTION_SERVICE_NAME}
+      QUESTION_SERVICE_PORT: ${QUESTION_SERVICE_PORT}
+      DATASOURCE_URL: ${DATASOURCE_URL}
+      DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
+      DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
+#    restart: always
