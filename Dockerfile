@@ -1,17 +1,20 @@
 # Stage 1: Build
-FROM eclipse-temurin:17-jdk AS builder
+FROM amazoncorretto:21 AS builder
 
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# Gradle 설정 복사 및 실행 권한 부여
+# Gradle 캐시를 활용하기 위해 설정 파일 먼저 복사
 COPY gradlew ./
 COPY gradle gradle
 COPY settings.gradle .
 COPY build.gradle .
+
+# Gradle 실행 권한 추가
 RUN chmod +x gradlew
 
-# 종속성 캐시 생성
-RUN ./gradlew dependencies
+# 종속성 캐시 생성 (빌드 속도 향상)
+RUN ./gradlew dependencies --no-daemon
 
 # 소스 코드 복사
 COPY src src
@@ -20,11 +23,12 @@ COPY src src
 RUN ./gradlew clean build -x test --no-daemon
 
 # Stage 2: Run
-FROM eclipse-temurin:17-jre
+FROM amazoncorretto:21
 
+# 작업 디렉토리 설정
 WORKDIR /app
 
-# 빌드된 JAR 복사
+# 빌드된 JAR 복사 (이름 패턴 수정)
 COPY --from=builder /app/build/libs/*.jar /app/question-service.jar
 
 # 애플리케이션 실행
