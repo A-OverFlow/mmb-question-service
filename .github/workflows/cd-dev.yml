@@ -47,4 +47,4 @@ jobs:
             echo "==== DOCKER PULL ===="
             docker pull mumulbo/question-service:dev
             cd /home/ec2-user/infra
-            docker-compose --env-file .env.dev up -d --no-deps --force-recreate mmb-question-service:dev
+            docker-compose --env-file .env.dev up -d --no-deps --force-recreate mmb-question-service
