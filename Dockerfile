@@ -1,35 +1,30 @@
-# Stage 1: Build
-FROM amazoncorretto:21 AS builder
+# 1단계: 빌드 스테이지
+FROM amazoncorretto:21 AS build
 
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# Gradle 캐시를 활용하기 위해 설정 파일 먼저 복사
-COPY gradlew ./
-COPY gradle gradle
-COPY settings.gradle .
-COPY build.gradle .
+# 의존성 캐싱 유도를 위한 빌드 스크립트만 복사
+COPY build.gradle settings.gradle gradlew gradlew.bat ./
+COPY gradle ./gradle
 
 # Gradle 실행 권한 추가
 RUN chmod +x gradlew
 
-# 종속성 캐시 생성 (빌드 속도 향상)
-RUN ./gradlew dependencies --no-daemon
+# 의존성만 먼저 다운로드
+RUN ./gradlew dependencies --no-daemon || return 0
 
-# 소스 코드 복사
-COPY src src
+# 전체 프로젝트 복사
+COPY . .
 
-# 프로젝트 빌드 (테스트 제외)
-RUN ./gradlew clean build -x test --no-daemon
+# Spring Boot JAR 빌드 (테스트 생략)
+RUN ./gradlew bootJar --no-daemon -x test
 
-# Stage 2: Run
+# 2단계: 런타임 스테이지 (경량 JDK만 포함)
 FROM amazoncorretto:21
 
-# 작업 디렉토리 설정
-WORKDIR /app
+# 빌드된 JAR 복사
+COPY --from=build /app/build/libs/*.jar /app/question-service.jar
 
-# 빌드된 JAR 복사 (이름 패턴 수정)
-COPY --from=builder /app/build/libs/*.jar /app/question-service.jar
-
-# 애플리케이션 실행
+# 앱 실행
 ENTRYPOINT ["java", "-jar", "/app/question-service.jar"]
