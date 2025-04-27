@@ -1,0 +1,8 @@
+# 로컬 개발환경 설정
+# docker compose up -d --build
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: question-service:local

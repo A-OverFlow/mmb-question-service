@@ -1,15 +1,35 @@
-version: '3.8'
+# 개발 서버 배포 설정
 services:
-  question-service:
-    build:
-      dockerfile: ./Dockerfile
-    container_name: mmb-question-service
+  app:
+    image: mumulbo/question-service:dev
+    env_file:
+      - .env
     ports:
-      - 8080:${QUESTION_SERVICE_PORT}
+      - "${SERVICE_PORT}:8080"
+    networks:
+      - external-net
+    depends_on:
+      - db
+    restart: always
+  # db 컨테이너만 실행 : docker compose up -d db
+  db:
+    image: mysql:8
     environment:
-      QUESTION_SERVICE_NAME: ${QUESTION_SERVICE_NAME}
-      QUESTION_SERVICE_PORT: ${QUESTION_SERVICE_PORT}
-      DATASOURCE_URL: ${DATASOURCE_URL}
-      DATASOURCE_USERNAME: ${DATASOURCE_USERNAME}
-      DATASOURCE_PASSWORD: ${DATASOURCE_PASSWORD}
-#    restart: always
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "${HOST_DB_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - external-net
+
+volumes:
+  mysql_data:
+
+networks:
+  external-net:
+    external: true
+    name: sample-network
