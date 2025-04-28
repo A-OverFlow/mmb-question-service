@@ -8,14 +8,14 @@ WORKDIR /app
 COPY build.gradle settings.gradle gradlew gradlew.bat ./
 COPY gradle ./gradle
 
-# Gradle 실행 권한 추가
-RUN chmod +x gradlew
-
 # 의존성만 먼저 다운로드
 RUN ./gradlew dependencies --no-daemon || return 0
 
 # 전체 프로젝트 복사
 COPY . .
+
+# Gradle 실행 권한 추가
+RUN chmod +x gradlew
 
 # Spring Boot JAR 빌드 (테스트 생략)
 RUN ./gradlew bootJar --no-daemon -x test
