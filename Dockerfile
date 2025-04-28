@@ -17,6 +17,9 @@ RUN ./gradlew dependencies --no-daemon || true
 # 전체 프로젝트 복사
 COPY . .
 
+# Gradle 실행 권한 다시 추가
+RUN chmod +x gradlew
+
 # Spring Boot JAR 빌드 (테스트 생략)
 RUN ./gradlew bootJar --no-daemon -x test
 
