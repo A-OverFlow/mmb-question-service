@@ -62,7 +62,7 @@ jobs:
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env
           echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
           echo "HOST_DB_PORT=${{ vars.HOST_DB_PORT }}" >> .env
-          echo "SERVICE_PORTCONTAINER_DB_PORT=${{ vars.CONTAINER_DB_PORT }}" >> .env
+          echo "CONTAINER_DB_PORT=${{ vars.CONTAINER_DB_PORT }}" >> .env
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
           echo "DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env
