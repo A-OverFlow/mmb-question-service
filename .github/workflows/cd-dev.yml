@@ -41,7 +41,7 @@ jobs:
       - name: Docker 이미지 빌드 후 Docker Hub에 푸시
         uses: docker/build-push-action@v5
         with:
-          context: .               # 빌드 컨텍스트 (현재 디렉토리)
+          context: .                # 빌드 컨텍스트 (현재 디렉토리)
           file: Dockerfile          # 사용할 Dockerfile
           push: true                # 빌드 후 이미지 푸시
           tags: mumulbo/question-service:dev  # 이미지 태그 설정
