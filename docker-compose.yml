@@ -1,11 +1,12 @@
 # 개발 서버 배포 설정
 services:
   app:
-    image: mumulbo/question-service:dev
+    image: ${DOCKER_IMAGE}:dev
+    container_name: ${APPLICATION_NAME}
     env_file:
       - .env
     ports:
-      - "${SERVICE_PORT}:8080"
+      - "${SERVICE_PORT}:${SERVICE_PORT}"
     networks:
       - external-net
     depends_on:
@@ -14,6 +15,7 @@ services:
   # db 컨테이너만 실행 : docker compose up -d db
   db:
     image: mysql:8
+    container_name: ${APPLICATION_NAME}-mysql
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USERNAME}
@@ -32,4 +34,4 @@ volumes:
 networks:
   external-net:
     external: true
-    name: sample-network
+    name: ${MMB_DOCKER_NETWORK}

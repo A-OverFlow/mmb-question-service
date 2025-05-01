@@ -44,7 +44,7 @@ jobs:
           context: .                # 빌드 컨텍스트 (현재 디렉토리)
           file: Dockerfile          # 사용할 Dockerfile
           push: true                # 빌드 후 이미지 푸시
-          tags: mumulbo/question-service:dev  # 이미지 태그 설정
+          tags: ${{ vars.DOCKER_IMAGE }}:dev  # 이미지 태그 설정
 
       - name: EC2 서버에 배포 디렉토리 생성
         run: |
@@ -58,11 +58,15 @@ jobs:
 
       - name: 배포에 필요한 .env 파일 생성
         run: |
-          echo "SERVICE_PORT=${{ vars.SERVICE_PORT }}" > .env
+          > .env
+          echo "APPLICATION_NAME=${{ vars.APPLICATION_NAME }}" >> .env
+          echo "DOCKER_IMAGE=${{ vars.DOCKER_IMAGE }}" >> .env
+          echo "SERVICE_PORT=${{ vars.SERVICE_PORT }}" >> .env
           echo "DB_NAME=${{ vars.DB_NAME }}" >> .env
           echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
           echo "HOST_DB_PORT=${{ vars.HOST_DB_PORT }}" >> .env
           echo "CONTAINER_DB_PORT=${{ vars.CONTAINER_DB_PORT }}" >> .env
+          echo "MMB_DOCKER_NETWORK=${{ vars.MMB_DOCKER_NETWORK }}" >> .env
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
           echo "DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env

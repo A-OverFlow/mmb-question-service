@@ -1,6 +1,6 @@
 # 서버 관련 설정
 server:
-  port: 8080 # 애플리케이션이 실행될 포트 번호 (기본값: 8080)
+  port: ${SERVICE_PORT:8083}
 
 # 스프링 부트 설정
 spring:
