@@ -3,6 +3,7 @@ package com.aoverflow.mmb.question_service.question.dto;
 import com.aoverflow.mmb.question_service.answer.dto.AnswerDto;
 import com.aoverflow.mmb.question_service.question.entity.Question;
 import com.aoverflow.mmb.question_service.question.entity.QuestionStatus;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,8 @@ public class QuestionDto {
   private String author;
   private QuestionStatus status;
   private List<AnswerDto> answers;
+  private LocalDateTime createdAt;
+  private LocalDateTime editedAt;
 
   public static QuestionDto from(Question question) {
 
@@ -33,6 +36,8 @@ public class QuestionDto {
         .author(question.getAuthor())
         .status(question.getStatus())
         .answers(answerDtoList)
+        .createdAt(question.getCreatedAt())
+        .editedAt(question.getEditedAt())
         .build();
   }
 }
