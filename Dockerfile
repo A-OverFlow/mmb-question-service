@@ -30,4 +30,4 @@ FROM amazoncorretto:21
 COPY --from=build /app/build/libs/*.jar /app/question-service.jar
 
 # 앱 실행
-ENTRYPOINT ["java", "-jar", "/app/question-service.jar"]
+ENTRYPOINT ["java", "-Duser.timezone=Asia/Seoul", "-jar", "/app/question-service.jar"]
