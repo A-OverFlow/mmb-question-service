@@ -3,6 +3,7 @@ package com.aoverflow.mmb.question_service.question.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
@@ -116,6 +117,8 @@ class QuestionServiceTest {
     assertNotEquals(createdQuestionDto.getSubject(), updatedQuestionDto.getSubject());
     assertNotEquals(createdQuestionDto.getContent(), updatedQuestionDto.getContent());
     assertNotEquals(createdQuestionDto.getStatus(), updatedQuestionDto.getStatus());
+    assertEquals(updatedQuestionDto.getCreatedAt(), createdQuestionDto.getCreatedAt());
+    assertTrue(updatedQuestionDto.getEditedAt().isAfter(createdQuestionDto.getEditedAt()));
   }
 
   @Test

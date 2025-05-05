@@ -2,6 +2,8 @@ package com.aoverflow.mmb.question_service.question.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.aoverflow.mmb.question_service.config.TestConfig;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
@@ -44,6 +46,8 @@ class QuestionRepositoryTest {
     assertEquals(question.getSubject(), savedQuestion.getSubject());
     assertEquals(question.getContent(), savedQuestion.getContent());
     assertEquals(question.getStatus(), savedQuestion.getStatus());
+    assertNotNull(savedQuestion.getCreatedAt());
+    assertNotNull(savedQuestion.getEditedAt());
   }
 
   @Test
@@ -65,6 +69,7 @@ class QuestionRepositoryTest {
         .orElseThrow(EntityNotFoundException::new);
 
     assertNotEquals(subject, foundQuestion.getSubject());
+    assertTrue(foundQuestion.getEditedAt().isAfter(foundQuestion.getCreatedAt()));
   }
 
   @Test
@@ -86,6 +91,7 @@ class QuestionRepositoryTest {
         .orElseThrow(EntityNotFoundException::new);
 
     assertNotEquals(content, foundQuestion.getContent());
+    assertTrue(foundQuestion.getEditedAt().isAfter(foundQuestion.getCreatedAt()));
   }
 
   @Test
@@ -107,5 +113,6 @@ class QuestionRepositoryTest {
         .orElseThrow(EntityNotFoundException::new);
 
     assertNotEquals(status, foundQuestion.getStatus());
+    assertTrue(foundQuestion.getEditedAt().isAfter(foundQuestion.getCreatedAt()));
   }
 }
