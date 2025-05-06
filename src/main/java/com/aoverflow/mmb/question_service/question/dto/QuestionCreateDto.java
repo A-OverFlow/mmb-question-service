@@ -1,6 +1,7 @@
 package com.aoverflow.mmb.question_service.question.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,14 +17,18 @@ public class QuestionCreateDto {
   @NotBlank(message = "Content cannot be blank")
   private String content;
 
-  @NotBlank(message = "Author cannot be blank")
-  private String author;
+  @NotNull(message = "Author id cannot be null")
+  private Long authorId;
 
-  public static QuestionCreateDto from(String subject, String content, String author) {
+  @NotBlank(message = "Author name cannot be blank")
+  private String authorName;
+
+  public static QuestionCreateDto from(String subject, String content, Long authorId, String authorName) {
     return QuestionCreateDto.builder()
         .subject(subject)
         .content(content)
-        .author(author)
+        .authorId(authorId)
+        .authorName(authorName)
         .build();
   }
 }
