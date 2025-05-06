@@ -27,7 +27,8 @@ class QuestionServiceTest {
 
   private final static String QUESTION_SUBJECT = "더미 질문 제목";
   private final static String QUESTION_CONTENT = "더미 질문 내용";
-  private final static String QUESTION_AUTHOR = "더미 질문 작성자";
+  private final static Long QUESTION_AUTHOR_ID = 123L;
+  private final static String QUESTION_AUTHOR_NAME = "더미 질문 작성자";
 
   @Test
   @DisplayName("질문 단건 조회")
@@ -36,7 +37,8 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR
+        QUESTION_AUTHOR_ID,
+        QUESTION_AUTHOR_NAME
     );
     QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
 
@@ -57,7 +59,8 @@ class QuestionServiceTest {
       QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
           QUESTION_SUBJECT + i,
           QUESTION_CONTENT + i,
-          QUESTION_AUTHOR + i
+          QUESTION_AUTHOR_ID + i,
+          QUESTION_AUTHOR_NAME + i
       );
       QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
       createdQuestionIds.add(createdQuestionDto.getId());
@@ -80,7 +83,8 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR
+        QUESTION_AUTHOR_ID,
+        QUESTION_AUTHOR_NAME
     );
 
     // when
@@ -98,7 +102,8 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR
+        QUESTION_AUTHOR_ID,
+        QUESTION_AUTHOR_NAME
     );
     QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
 
@@ -128,7 +133,8 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR
+        QUESTION_AUTHOR_ID,
+        QUESTION_AUTHOR_NAME
     );
     QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
 

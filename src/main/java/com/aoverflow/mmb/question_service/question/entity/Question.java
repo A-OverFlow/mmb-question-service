@@ -34,7 +34,9 @@ public class Question extends BaseEntity {
 
   private String subject;
   private String content;
-  private String author;
+
+  private Long authorId;
+  private String authorName;
 
   @Enumerated(EnumType.STRING)
   private QuestionStatus status;
@@ -63,18 +65,20 @@ public class Question extends BaseEntity {
   }
 
   @Builder
-  public Question(String subject, String content, String author, QuestionStatus status) {
+  public Question(String subject, String content, Long authorId, String authorName, QuestionStatus status) {
     this.subject = subject;
     this.content = content;
-    this.author = author;
+    this.authorId = authorId;
+    this.authorName = authorName;
     this.status = status;
   }
 
-  public static Question of(String subject, String content, String author, QuestionStatus status) {
+  public static Question of(String subject, String content, Long authorId, String authorName, QuestionStatus status) {
     return Question.builder()
         .subject(subject)
         .content(content)
-        .author(author)
+        .authorId(authorId)
+        .authorName(authorName)
         .status(status)
         .build();
   }
@@ -83,7 +87,8 @@ public class Question extends BaseEntity {
     return Question.builder()
         .subject(questionCreateDto.getSubject())
         .content(questionCreateDto.getContent())
-        .author(questionCreateDto.getAuthor())
+        .authorId(questionCreateDto.getAuthorId())
+        .authorName(questionCreateDto.getAuthorName())
         .status(QuestionStatus.NEW)
         .build();
   }

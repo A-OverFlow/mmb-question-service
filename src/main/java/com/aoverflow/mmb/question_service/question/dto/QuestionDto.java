@@ -17,7 +17,7 @@ public class QuestionDto {
   private Long id;
   private String subject;
   private String content;
-  private String author;
+  private AuthorDto author;
   private QuestionStatus status;
   private List<AnswerDto> answers;
   private LocalDateTime createdAt;
@@ -29,15 +29,29 @@ public class QuestionDto {
         .map(AnswerDto::from)
         .toList();
 
+    AuthorDto authorDto = AuthorDto.builder()
+        .id(question.getAuthorId())
+        .name(question.getAuthorName())
+        .build();
+
     return QuestionDto.builder()
         .id(question.getId())
         .subject(question.getSubject())
         .content(question.getContent())
-        .author(question.getAuthor())
+        .author(authorDto)
         .status(question.getStatus())
         .answers(answerDtoList)
         .createdAt(question.getCreatedAt())
         .editedAt(question.getEditedAt())
         .build();
+  }
+
+  @Getter
+  @Setter
+  @Builder
+  public static class AuthorDto {
+
+    private Long id;
+    private String name;
   }
 }

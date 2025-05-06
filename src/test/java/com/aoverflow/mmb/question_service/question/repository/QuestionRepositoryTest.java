@@ -28,13 +28,14 @@ class QuestionRepositoryTest {
 
   private final static String QUESTION_SUBJECT = "더미 질문 제목";
   private final static String QUESTION_CONTENT = "더미 질문 내용";
-  private final static String QUESTION_AUTHOR = "더미 질문 작성자";
+  private final static Long QUESTION_AUTHOR_ID = 123L;
+  private final static String QUESTION_AUTHOR_NAME = "더미 질문 작성자";
   private final static QuestionStatus QUESTION_STATUS = QuestionStatus.NEW;
 
   @Test
   public void 질문_생성() {
     // given
-    Question question = Question.of("질문 있습니다!", "이게 질문입니다.", "작성자", QuestionStatus.ING);
+    Question question = Question.of("질문 있습니다!", "이게 질문입니다.", 123L, "작성자", QuestionStatus.ING);
 
     // when
     Question savedQuestion = questionRepository.save(question);
@@ -53,7 +54,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_제목_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR, QUESTION_STATUS);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME, QUESTION_STATUS);
     Question savedQuestion = questionRepository.save(question);
     String subject = savedQuestion.getSubject();
 
@@ -75,7 +76,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_내용_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR, QUESTION_STATUS);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME, QUESTION_STATUS);
     Question savedQuestion = questionRepository.save(question);
     String content = savedQuestion.getContent();
 
@@ -97,7 +98,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_상태_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR, QUESTION_STATUS);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME, QUESTION_STATUS);
     Question savedQuestion = questionRepository.save(question);
     QuestionStatus status = savedQuestion.getStatus();
 
