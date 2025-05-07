@@ -6,8 +6,9 @@ import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import com.aoverflow.mmb.question_service.question.entity.Question;
 import com.aoverflow.mmb.question_service.question.repository.QuestionRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,12 +32,9 @@ public class QuestionService {
   /**
    * 질문 전체 조회
    */
-  public List<QuestionDto> getAll() {
-    List<Question> questions = questionRepository.findAll();
-
-    return questions.stream()
-        .map(QuestionDto::from)
-        .toList();
+  public Page<QuestionDto> getAll(Pageable pageable) {
+    return questionRepository.findAll(pageable)
+        .map(QuestionDto::from);
   }
 
   /**
