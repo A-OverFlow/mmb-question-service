@@ -58,7 +58,6 @@ public class QuestionService {
         .orElseThrow(EntityNotFoundException::new);
 
     question.update(questionUpdateDto);
-    questionRepository.flush();
 
     return QuestionDto.from(question);
   }
