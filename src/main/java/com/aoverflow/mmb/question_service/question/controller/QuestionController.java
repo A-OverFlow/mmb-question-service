@@ -53,7 +53,8 @@ public class QuestionController {
 
   @PutMapping
   public ResponseEntity<QuestionDto> update(@Valid @RequestBody QuestionUpdateDto questionUpdateDto) {
-    return ResponseEntity.ok(questionService.update(questionUpdateDto));
+    questionService.update(questionUpdateDto);
+    return ResponseEntity.ok(questionService.get(questionUpdateDto.getId()));
   }
 
   @DeleteMapping("/{id}")
