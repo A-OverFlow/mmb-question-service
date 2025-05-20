@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.aoverflow.mmb.question_service.config.TestConfig;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import com.aoverflow.mmb.question_service.question.entity.Question;
-import com.aoverflow.mmb.question_service.question.entity.QuestionStatus;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -30,12 +29,11 @@ class QuestionRepositoryTest {
   private final static String QUESTION_CONTENT = "더미 질문 내용";
   private final static Long QUESTION_AUTHOR_ID = 123L;
   private final static String QUESTION_AUTHOR_NAME = "더미 질문 작성자";
-  private final static QuestionStatus QUESTION_STATUS = QuestionStatus.NEW;
 
   @Test
   public void 질문_생성() {
     // given
-    Question question = Question.of("질문 있습니다!", "이게 질문입니다.", 123L, "작성자", QuestionStatus.ING);
+    Question question = Question.of("질문 있습니다!", "이게 질문입니다.", 123L, "작성자");
 
     // when
     Question savedQuestion = questionRepository.save(question);
@@ -46,7 +44,6 @@ class QuestionRepositoryTest {
 
     assertEquals(question.getSubject(), savedQuestion.getSubject());
     assertEquals(question.getContent(), savedQuestion.getContent());
-    assertEquals(question.getStatus(), savedQuestion.getStatus());
     assertNotNull(savedQuestion.getCreatedAt());
     assertNotNull(savedQuestion.getEditedAt());
   }
@@ -54,12 +51,12 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_제목_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME, QUESTION_STATUS);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME);
     Question savedQuestion = questionRepository.save(question);
     String subject = savedQuestion.getSubject();
 
     // when
-    question.update(QuestionUpdateDto.from(savedQuestion.getId(), "수정한 제목", QUESTION_CONTENT, QUESTION_STATUS));
+    question.update(QuestionUpdateDto.from(savedQuestion.getId(), "수정한 제목", QUESTION_CONTENT));
     questionRepository.save(question);
 
     // then
@@ -76,12 +73,12 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_내용_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME, QUESTION_STATUS);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME);
     Question savedQuestion = questionRepository.save(question);
     String content = savedQuestion.getContent();
 
     // when
-    question.update(QuestionUpdateDto.from(savedQuestion.getId(), QUESTION_SUBJECT, "수정한 내용", QUESTION_STATUS));
+    question.update(QuestionUpdateDto.from(savedQuestion.getId(), QUESTION_SUBJECT, "수정한 내용"));
     questionRepository.save(question);
 
     // then
@@ -98,12 +95,11 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_상태_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME, QUESTION_STATUS);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME);
     Question savedQuestion = questionRepository.save(question);
-    QuestionStatus status = savedQuestion.getStatus();
 
     // when
-    question.update(QuestionUpdateDto.from(savedQuestion.getId(), QUESTION_SUBJECT, QUESTION_CONTENT, QuestionStatus.DONE));
+    question.update(QuestionUpdateDto.from(savedQuestion.getId(), QUESTION_SUBJECT, QUESTION_CONTENT));
     questionRepository.save(question);
 
     // then
@@ -113,7 +109,6 @@ class QuestionRepositoryTest {
     Question foundQuestion = questionRepository.findById(question.getId())
         .orElseThrow(EntityNotFoundException::new);
 
-    assertNotEquals(status, foundQuestion.getStatus());
     assertTrue(foundQuestion.getEditedAt().isAfter(foundQuestion.getCreatedAt()));
   }
 }

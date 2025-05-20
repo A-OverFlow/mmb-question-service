@@ -1,6 +1,5 @@
 package com.aoverflow.mmb.question_service.question.dto;
 
-import com.aoverflow.mmb.question_service.question.entity.QuestionStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -21,15 +20,11 @@ public class QuestionUpdateDto {
   @NotBlank(message = "Content cannot be blank")
   private String content;
 
-  @NotNull(message = "Status cannot be null")
-  private QuestionStatus status;
-
-  public static QuestionUpdateDto from(Long id, String subject, String content, QuestionStatus status) {
+  public static QuestionUpdateDto from(Long id, String subject, String content) {
     return QuestionUpdateDto.builder()
         .id(id)
         .subject(subject)
         .content(content)
-        .status(status)
         .build();
   }
 }

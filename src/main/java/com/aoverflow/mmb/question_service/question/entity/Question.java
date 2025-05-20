@@ -7,8 +7,6 @@ import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,9 +36,6 @@ public class Question extends BaseEntity {
   private Long authorId;
   private String authorName;
 
-  @Enumerated(EnumType.STRING)
-  private QuestionStatus status;
-
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Answer> answers = new ArrayList<>();
 
@@ -61,25 +56,22 @@ public class Question extends BaseEntity {
   public void update(QuestionUpdateDto questionUpdateDto) {
     this.subject = questionUpdateDto.getSubject();
     this.content = questionUpdateDto.getContent();
-    this.status = questionUpdateDto.getStatus();
   }
 
   @Builder
-  public Question(String subject, String content, Long authorId, String authorName, QuestionStatus status) {
+  public Question(String subject, String content, Long authorId, String authorName) {
     this.subject = subject;
     this.content = content;
     this.authorId = authorId;
     this.authorName = authorName;
-    this.status = status;
   }
 
-  public static Question of(String subject, String content, Long authorId, String authorName, QuestionStatus status) {
+  public static Question of(String subject, String content, Long authorId, String authorName) {
     return Question.builder()
         .subject(subject)
         .content(content)
         .authorId(authorId)
         .authorName(authorName)
-        .status(status)
         .build();
   }
 
@@ -89,7 +81,6 @@ public class Question extends BaseEntity {
         .content(questionCreateDto.getContent())
         .authorId(questionCreateDto.getAuthorId())
         .authorName(questionCreateDto.getAuthorName())
-        .status(QuestionStatus.NEW)
         .build();
   }
 

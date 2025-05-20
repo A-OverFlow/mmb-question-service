@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
-import com.aoverflow.mmb.question_service.question.entity.QuestionStatus;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -128,8 +127,7 @@ class QuestionServiceTest {
     QuestionUpdateDto questionUpdateDto = QuestionUpdateDto.from(
         createdQuestionDto.getId(),
         "수정한 제목",
-        "수정한 내용",
-        QuestionStatus.ING
+        "수정한 내용"
     );
 
     // when
@@ -139,7 +137,6 @@ class QuestionServiceTest {
     assertEquals(createdQuestionDto.getId(), updatedQuestionDto.getId());
     assertNotEquals(createdQuestionDto.getSubject(), updatedQuestionDto.getSubject());
     assertNotEquals(createdQuestionDto.getContent(), updatedQuestionDto.getContent());
-    assertNotEquals(createdQuestionDto.getStatus(), updatedQuestionDto.getStatus());
     assertEquals(updatedQuestionDto.getCreatedAt(), createdQuestionDto.getCreatedAt());
     assertTrue(updatedQuestionDto.getEditedAt().isAfter(createdQuestionDto.getEditedAt()));
   }
