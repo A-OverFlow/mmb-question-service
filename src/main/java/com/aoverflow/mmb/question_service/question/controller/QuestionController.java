@@ -1,6 +1,7 @@
 package com.aoverflow.mmb.question_service.question.controller;
 
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionCustomPageDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import com.aoverflow.mmb.question_service.question.service.QuestionService;
@@ -34,7 +35,7 @@ public class QuestionController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<QuestionDto>> getAll(
+  public ResponseEntity<QuestionCustomPageDto<QuestionDto>> getAll(
       @PageableDefault(
           page = 0,
           size = 10,
@@ -42,7 +43,8 @@ public class QuestionController {
           direction = Direction.DESC
       ) Pageable pageable
   ) {
-    return ResponseEntity.ok(questionService.getAll(pageable));
+    Page<QuestionDto> page = questionService.getAll(pageable);
+    return ResponseEntity.ok(QuestionCustomPageDto.from(page));
   }
 
   @PostMapping
