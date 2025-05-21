@@ -39,7 +39,7 @@ public class QuestionController {
       @PageableDefault(
           page = 0,
           size = 10,
-          sort = {"createdAt", "id"},
+          sort = {"id"},
           direction = Direction.DESC
       ) Pageable pageable
   ) {
