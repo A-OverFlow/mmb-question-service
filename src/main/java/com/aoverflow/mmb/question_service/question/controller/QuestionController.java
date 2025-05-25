@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,8 +49,8 @@ public class QuestionController {
   }
 
   @PostMapping
-  public ResponseEntity<QuestionDto> create(@Valid @RequestBody QuestionCreateDto questionCreateDto) {
-    QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
+  public ResponseEntity<QuestionDto> create(@RequestHeader("X-User-Id") Long authorId, @Valid @RequestBody QuestionCreateDto questionCreateDto) {
+    QuestionDto createdQuestionDto = questionService.create(authorId, questionCreateDto);
     return ResponseEntity.created(URI.create("/questions/" + createdQuestionDto.getId())).body(createdQuestionDto);
   }
 

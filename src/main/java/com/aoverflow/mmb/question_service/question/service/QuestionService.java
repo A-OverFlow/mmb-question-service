@@ -41,8 +41,8 @@ public class QuestionService {
    * 질문 생성
    */
   @Transactional
-  public QuestionDto create(QuestionCreateDto questionCreateDto) {
-    Question savedQuestion = questionRepository.save(Question.of(questionCreateDto));
+  public QuestionDto create(Long authorId, QuestionCreateDto questionCreateDto) {
+    Question savedQuestion = questionRepository.save(Question.of(authorId, questionCreateDto));
 
     return QuestionDto.from(savedQuestion);
   }

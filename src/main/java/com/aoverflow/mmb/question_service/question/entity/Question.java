@@ -75,11 +75,11 @@ public class Question extends BaseEntity {
         .build();
   }
 
-  public static Question of(QuestionCreateDto questionCreateDto) {
+  public static Question of(Long authorId, QuestionCreateDto questionCreateDto) {
     return Question.builder()
         .subject(questionCreateDto.getSubject())
         .content(questionCreateDto.getContent())
-        .authorId(questionCreateDto.getAuthorId())
+        .authorId(authorId)
         .authorName(questionCreateDto.getAuthorName())
         .build();
   }
