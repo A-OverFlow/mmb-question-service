@@ -154,5 +154,7 @@ class QuestionServiceTest {
     // then
     assertThrows(EntityNotFoundException.class,
         () -> questionService.get(createdQuestionDto.getId()));
+    assertThrows(EntityNotFoundException.class,
+        () -> questionService.delete(createdQuestionDto.getId()));
   }
 }
