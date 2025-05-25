@@ -91,24 +91,4 @@ class QuestionRepositoryTest {
     assertNotEquals(content, foundQuestion.getContent());
     assertTrue(foundQuestion.getEditedAt().isAfter(foundQuestion.getCreatedAt()));
   }
-
-  @Test
-  public void 질문_상태_수정() {
-    // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME);
-    Question savedQuestion = questionRepository.save(question);
-
-    // when
-    question.update(QuestionUpdateDto.from(savedQuestion.getId(), QUESTION_SUBJECT, QUESTION_CONTENT));
-    questionRepository.save(question);
-
-    // then
-    em.flush();
-    em.clear();
-
-    Question foundQuestion = questionRepository.findById(question.getId())
-        .orElseThrow(EntityNotFoundException::new);
-
-    assertTrue(foundQuestion.getEditedAt().isAfter(foundQuestion.getCreatedAt()));
-  }
 }

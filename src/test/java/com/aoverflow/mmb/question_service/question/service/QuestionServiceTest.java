@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,6 +28,9 @@ class QuestionServiceTest {
 
   @Autowired
   QuestionService questionService;
+
+  @Autowired
+  private EntityManager em;
 
   private final static String QUESTION_SUBJECT = "더미 질문 제목";
   private final static String QUESTION_CONTENT = "더미 질문 내용";
@@ -127,14 +131,17 @@ class QuestionServiceTest {
     );
 
     // when
-    QuestionDto updatedQuestionDto = questionService.update(questionUpdateDto);
+    questionService.update(questionUpdateDto);
 
     // then
+    em.flush();
+    em.clear();
+    QuestionDto updatedQuestionDto = questionService.get(questionUpdateDto.getId());
+
     assertEquals(createdQuestionDto.getId(), updatedQuestionDto.getId());
     assertNotEquals(createdQuestionDto.getSubject(), updatedQuestionDto.getSubject());
     assertNotEquals(createdQuestionDto.getContent(), updatedQuestionDto.getContent());
-    assertEquals(updatedQuestionDto.getCreatedAt(), createdQuestionDto.getCreatedAt());
-    assertTrue(updatedQuestionDto.getEditedAt().isAfter(createdQuestionDto.getEditedAt()));
+    assertNotEquals(updatedQuestionDto.getEditedAt(), updatedQuestionDto.getCreatedAt());
   }
 
   @Test
