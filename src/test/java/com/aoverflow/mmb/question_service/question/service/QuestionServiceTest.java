@@ -42,10 +42,9 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR_ID,
         QUESTION_AUTHOR_NAME
     );
-    QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
+    QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     // when
     QuestionDto foundQuestion = questionService.get(createdQuestionDto.getId());
@@ -64,10 +63,9 @@ class QuestionServiceTest {
       QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
           QUESTION_SUBJECT + i,
           QUESTION_CONTENT + i,
-          QUESTION_AUTHOR_ID + i,
           QUESTION_AUTHOR_NAME + i
       );
-      QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
+      QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID + i, questionCreateDto);
       createdQuestionIds.add(createdQuestionDto.getId());
     }
 
@@ -100,12 +98,11 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR_ID,
         QUESTION_AUTHOR_NAME
     );
 
     // when
-    QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
+    QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     // then
     QuestionDto foundQuestion = questionService.get(createdQuestionDto.getId());
@@ -119,10 +116,9 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR_ID,
         QUESTION_AUTHOR_NAME
     );
-    QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
+    QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     QuestionUpdateDto questionUpdateDto = QuestionUpdateDto.from(
         createdQuestionDto.getId(),
@@ -148,10 +144,9 @@ class QuestionServiceTest {
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
         QUESTION_CONTENT,
-        QUESTION_AUTHOR_ID,
         QUESTION_AUTHOR_NAME
     );
-    QuestionDto createdQuestionDto = questionService.create(questionCreateDto);
+    QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     // when
     questionService.delete(createdQuestionDto.getId());
