@@ -65,6 +65,8 @@ public class QuestionService {
    */
   @Transactional
   public void delete(Long id) {
+    questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
     questionRepository.deleteById(id);
   }
 }
