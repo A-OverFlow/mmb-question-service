@@ -1,7 +1,7 @@
 # 개발 서버 배포 설정
 services:
   app:
-    image: ${DOCKER_IMAGE}:dev
+    image: ${DOCKER_IMAGE}:IMAGE_TAG_PLACEHOLDER
     container_name: ${APPLICATION_NAME}
     env_file:
       - .env
@@ -12,6 +12,11 @@ services:
     depends_on:
       - db
     restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
   # db 컨테이너만 실행 : docker compose up -d db
   db:
     image: mysql:8
