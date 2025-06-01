@@ -1,10 +1,13 @@
 package com.aoverflow.mmb.question_service.question.service;
 
+import com.aoverflow.mmb.question_service.common.feignClients.MemberServiceClient;
+import com.aoverflow.mmb.question_service.member.dto.MemberDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import com.aoverflow.mmb.question_service.question.entity.Question;
 import com.aoverflow.mmb.question_service.question.repository.QuestionRepository;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionService {
 
   private final QuestionRepository questionRepository;
+  private final MemberServiceClient memberServiceClient;
 
   /**
    * 질문 단건 조회
@@ -42,7 +46,14 @@ public class QuestionService {
    */
   @Transactional
   public QuestionDto create(Long authorId, QuestionCreateDto questionCreateDto) {
-    Question savedQuestion = questionRepository.save(Question.of(authorId, questionCreateDto));
+    MemberDto author;
+    try {
+      author = memberServiceClient.getName(authorId);
+    } catch (FeignException.NotFound e) {
+      throw new EntityNotFoundException("작성자를 찾을 수 없음. Id: " + authorId);
+    }
+
+    Question savedQuestion = questionRepository.save(Question.of(authorId, author.getName(), questionCreateDto));
 
     return QuestionDto.from(savedQuestion);
   }

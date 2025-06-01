@@ -16,14 +16,10 @@ public class QuestionCreateDto {
   @NotBlank(message = "Content cannot be blank")
   private String content;
 
-  @NotBlank(message = "Author name cannot be blank")
-  private String authorName;
-
-  public static QuestionCreateDto from(String subject, String content, String authorName) {
+  public static QuestionCreateDto from(String subject, String content) {
     return QuestionCreateDto.builder()
         .subject(subject)
         .content(content)
-        .authorName(authorName)
         .build();
   }
 }
