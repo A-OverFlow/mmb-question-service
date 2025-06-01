@@ -4,7 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.BDDMockito.given;
 
+import com.aoverflow.mmb.question_service.common.feignClients.MemberServiceClient;
+import com.aoverflow.mmb.question_service.member.dto.MemberDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
@@ -20,17 +23,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
 class QuestionServiceTest {
-
-  @Autowired
-  QuestionService questionService;
-
-  @Autowired
-  private EntityManager em;
 
   private final static String QUESTION_SUBJECT = "더미 질문 제목";
   private final static String QUESTION_CONTENT = "더미 질문 내용";
@@ -39,15 +37,44 @@ class QuestionServiceTest {
   private final static int PAGE_NUMBER = 0;
   private final static int PAGE_SIZE = 3;
 
+  @Autowired
+  QuestionService questionService;
+
+  @Autowired
+  private EntityManager em;
+
+  @MockitoBean
+  MemberServiceClient memberServiceClient;
+
+  private void mockAuthorFound() {
+    // mocking FeignClient connection
+    given(memberServiceClient.getName(QUESTION_AUTHOR_ID))
+        .willReturn(MemberDto.builder()
+            .name(QUESTION_AUTHOR_NAME)
+            .build()
+        );
+  }
+
+  private void mockAuthorFound(int i) {
+    // mocking FeignClient connection
+    given(memberServiceClient.getName(QUESTION_AUTHOR_ID + i))
+        .willReturn(MemberDto.builder()
+            .name(QUESTION_AUTHOR_NAME + i)
+            .build()
+        );
+  }
+
   @Test
   @DisplayName("질문 단건 조회")
   void get() {
     // given
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
-        QUESTION_CONTENT,
-        QUESTION_AUTHOR_NAME
+        QUESTION_CONTENT
     );
+
+    mockAuthorFound();
+
     QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     // when
@@ -66,9 +93,9 @@ class QuestionServiceTest {
     for (int i = 0; i < 10; i++) {
       QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
           QUESTION_SUBJECT + i,
-          QUESTION_CONTENT + i,
-          QUESTION_AUTHOR_NAME + i
+          QUESTION_CONTENT + i
       );
+      mockAuthorFound(i);
       QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID + i, questionCreateDto);
       createdQuestionIds.add(createdQuestionDto.getId());
     }
@@ -101,9 +128,10 @@ class QuestionServiceTest {
     // given
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
-        QUESTION_CONTENT,
-        QUESTION_AUTHOR_NAME
+        QUESTION_CONTENT
     );
+
+    mockAuthorFound();
 
     // when
     QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
@@ -119,9 +147,9 @@ class QuestionServiceTest {
     // given
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
-        QUESTION_CONTENT,
-        QUESTION_AUTHOR_NAME
+        QUESTION_CONTENT
     );
+    mockAuthorFound();
     QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     QuestionUpdateDto questionUpdateDto = QuestionUpdateDto.from(
@@ -150,9 +178,9 @@ class QuestionServiceTest {
     // given
     QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
         QUESTION_SUBJECT,
-        QUESTION_CONTENT,
-        QUESTION_AUTHOR_NAME
+        QUESTION_CONTENT
     );
+    mockAuthorFound();
     QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     // when
