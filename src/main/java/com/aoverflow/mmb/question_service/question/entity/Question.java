@@ -34,7 +34,7 @@ public class Question extends BaseEntity {
   private String content;
 
   private Long authorId;
-  private String authorName;
+  private String authorNickname;
 
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Answer> answers = new ArrayList<>();
@@ -59,28 +59,28 @@ public class Question extends BaseEntity {
   }
 
   @Builder
-  public Question(String subject, String content, Long authorId, String authorName) {
+  public Question(String subject, String content, Long authorId, String authorNickname) {
     this.subject = subject;
     this.content = content;
     this.authorId = authorId;
-    this.authorName = authorName;
+    this.authorNickname = authorNickname;
   }
 
-  public static Question of(String subject, String content, Long authorId, String authorName) {
+  public static Question of(String subject, String content, Long authorId, String authorNickname) {
     return Question.builder()
         .subject(subject)
         .content(content)
         .authorId(authorId)
-        .authorName(authorName)
+        .authorNickname(authorNickname)
         .build();
   }
 
-  public static Question of(Long authorId, String authorName, QuestionCreateDto questionCreateDto) {
+  public static Question of(Long authorId, String authorNickname, QuestionCreateDto questionCreateDto) {
     return Question.builder()
         .subject(questionCreateDto.getSubject())
         .content(questionCreateDto.getContent())
         .authorId(authorId)
-        .authorName(authorName)
+        .authorNickname(authorNickname)
         .build();
   }
 

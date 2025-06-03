@@ -22,7 +22,7 @@ public class QuestionDto {
 
     AuthorDto authorDto = AuthorDto.builder()
         .id(question.getAuthorId())
-        .name(question.getAuthorName())
+        .nickname(question.getAuthorNickname())
         .build();
 
     return QuestionDto.builder()
@@ -41,6 +41,6 @@ public class QuestionDto {
   public static class AuthorDto {
 
     private Long id;
-    private String name;
+    private String nickname;
   }
 }

@@ -48,7 +48,7 @@ class QuestionServiceTest {
 
   private void mockAuthorFound() {
     // mocking FeignClient connection
-    given(memberServiceClient.getName(QUESTION_AUTHOR_ID))
+    given(memberServiceClient.getMember(QUESTION_AUTHOR_ID))
         .willReturn(MemberDto.builder()
             .name(QUESTION_AUTHOR_NAME)
             .build()
@@ -57,7 +57,7 @@ class QuestionServiceTest {
 
   private void mockAuthorFound(int i) {
     // mocking FeignClient connection
-    given(memberServiceClient.getName(QUESTION_AUTHOR_ID + i))
+    given(memberServiceClient.getMember(QUESTION_AUTHOR_ID + i))
         .willReturn(MemberDto.builder()
             .name(QUESTION_AUTHOR_NAME + i)
             .build()
