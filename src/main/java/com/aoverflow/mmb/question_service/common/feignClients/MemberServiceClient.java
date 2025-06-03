@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface MemberServiceClient {
 
   @GetMapping("/members/me")
-  MemberDto getName(@RequestHeader("X-User-Id") Long authorId);
+  MemberDto getMember(@RequestHeader("X-User-Id") Long authorId);
 }

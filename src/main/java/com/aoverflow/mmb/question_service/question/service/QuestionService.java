@@ -48,12 +48,12 @@ public class QuestionService {
   public QuestionDto create(Long authorId, QuestionCreateDto questionCreateDto) {
     MemberDto author;
     try {
-      author = memberServiceClient.getName(authorId);
+      author = memberServiceClient.getMember(authorId);
     } catch (FeignException.NotFound e) {
       throw new EntityNotFoundException("작성자를 찾을 수 없음. Id: " + authorId);
     }
 
-    Question savedQuestion = questionRepository.save(Question.of(authorId, author.getName(), questionCreateDto));
+    Question savedQuestion = questionRepository.save(Question.of(authorId, author.getNickname(), questionCreateDto));
 
     return QuestionDto.from(savedQuestion);
   }

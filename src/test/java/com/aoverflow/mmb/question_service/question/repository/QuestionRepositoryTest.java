@@ -28,7 +28,7 @@ class QuestionRepositoryTest {
   private final static String QUESTION_SUBJECT = "더미 질문 제목";
   private final static String QUESTION_CONTENT = "더미 질문 내용";
   private final static Long QUESTION_AUTHOR_ID = 123L;
-  private final static String QUESTION_AUTHOR_NAME = "더미 질문 작성자";
+  private final static String QUESTION_AUTHOR_NICKNAME = "더미 질문 작성자";
 
   @Test
   public void 질문_생성() {
@@ -51,7 +51,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_제목_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NICKNAME);
     Question savedQuestion = questionRepository.save(question);
     String subject = savedQuestion.getSubject();
 
@@ -73,7 +73,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_내용_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NAME);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NICKNAME);
     Question savedQuestion = questionRepository.save(question);
     String content = savedQuestion.getContent();
 

@@ -9,7 +9,9 @@ import lombok.Setter;
 @Builder
 public class MemberDto {
 
+  private Long id;
   private String name;
   private String email;
+  private String nickname;
   private String picture;
 }
