@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface QuestionCustomRepository {
 
+  List<Question> findAfterIdOrderByIdDesc(Long id, int size);
+
   List<Question> findByAnswerAuthor(String author);
 
   List<Question> findByAnswerContent(String content);

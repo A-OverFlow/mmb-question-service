@@ -1,6 +1,7 @@
 package com.aoverflow.mmb.question_service.question.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,6 +11,7 @@ import com.aoverflow.mmb.question_service.common.feignClients.MemberServiceClien
 import com.aoverflow.mmb.question_service.member.dto.MemberDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,9 +22,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,8 +33,10 @@ class QuestionServiceTest {
   private final static String QUESTION_CONTENT = "더미 질문 내용";
   private final static Long QUESTION_AUTHOR_ID = 123L;
   private final static String QUESTION_AUTHOR_NAME = "더미 질문 작성자";
-  private final static int PAGE_NUMBER = 0;
   private final static int PAGE_SIZE = 3;
+  private final static int DEFAULT_PAGE_SIZE = 10;
+  private final static int NEGATIVE_PAGE_SIZE = -1;
+  private final static int ABUSIVE_PAGE_SIZE = 9999;
 
   @Autowired
   QuestionService questionService;
@@ -86,7 +87,7 @@ class QuestionServiceTest {
 
   @Test
   @DisplayName("질문 목록 조회")
-  void getAll() {
+  void getPaginatedList() {
     // given
     List<Long> createdQuestionIds = new ArrayList<>();
 
@@ -101,25 +102,34 @@ class QuestionServiceTest {
     }
 
     // when
-    PageRequest pageRequest = PageRequest.of(
-        PAGE_NUMBER,
-        PAGE_SIZE,
-        Sort.by(Sort.Direction.DESC, "createdAt")
-    );
-    Page<QuestionDto> page = questionService.getAll(pageRequest);
+    QuestionPageDto<QuestionDto> page = questionService.getPaginatedList(null, PAGE_SIZE);
+    QuestionPageDto<QuestionDto> wrongRequestPage1 = questionService.getPaginatedList(null, NEGATIVE_PAGE_SIZE);
+    QuestionPageDto<QuestionDto> wrongRequestPage2 = questionService.getPaginatedList(null, ABUSIVE_PAGE_SIZE);
 
     // then
-    List<QuestionDto> content = page.getContent();    // 조회된 데이터
-    assertEquals(3, content.size());          // 조회된 데이터 수
+    List<QuestionDto> content = page.getQuestions();    // 조회된 데이터
+    assertEquals(3, page.getPageSize());          // 조회된 데이터 수
     assertEquals(10, page.getTotalElements()); // 전체 데이터 수
-    assertEquals(0, page.getNumber());      // 페이지 번호
-    assertEquals(4, page.getTotalPages());  // 전체 페이지 번호
-    assertTrue(page.isFirst());   // 첫번째 항목인가?
-    assertTrue(page.hasNext());   // 다음 페이지가 있는가?
+    assertEquals(content.getLast().getId(), page.getLastId());        // 마지막 id(커서) 값
+    assertTrue(page.isHasNext());   // 다음 페이지가 있는가?
+
+    // then - 예외1(size가 음수일 때)
+    List<QuestionDto> content1 = wrongRequestPage1.getQuestions();    // 조회된 데이터
+    assertEquals(DEFAULT_PAGE_SIZE, wrongRequestPage1.getPageSize()); // 조회된 데이터 수
+    assertEquals(10, wrongRequestPage1.getTotalElements()); // 전체 데이터 수
+    assertEquals(content1.getLast().getId(), wrongRequestPage1.getLastId());        // 마지막 id(커서) 값
+    assertFalse(wrongRequestPage1.isHasNext());   // 다음 페이지가 있는가?
+
+    // then - 예외2(size가 터무니없이 클 때)
+    List<QuestionDto> content2 = wrongRequestPage2.getQuestions();    // 조회된 데이터
+    assertEquals(10, wrongRequestPage2.getPageSize());          // 조회된 데이터 수
+    assertEquals(10, wrongRequestPage2.getTotalElements()); // 전체 데이터 수
+    assertEquals(content2.getLast().getId(), wrongRequestPage1.getLastId());        // 마지막 id(커서) 값
+    assertFalse(wrongRequestPage2.isHasNext());   // 다음 페이지가 있는가?
 
     // 정렬이 의도대로 잘 됐는가?
     createdQuestionIds.sort(Comparator.reverseOrder());
-    assertEquals(createdQuestionIds.stream().skip(PAGE_NUMBER).limit(PAGE_SIZE).toList(), content.stream().map(QuestionDto::getId).toList());
+    assertEquals(createdQuestionIds.stream().limit(PAGE_SIZE).toList(), content.stream().map(QuestionDto::getId).toList());
   }
 
   @Test

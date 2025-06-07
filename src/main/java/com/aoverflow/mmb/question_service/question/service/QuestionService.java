@@ -4,14 +4,14 @@ import com.aoverflow.mmb.question_service.common.feignClients.MemberServiceClien
 import com.aoverflow.mmb.question_service.member.dto.MemberDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import com.aoverflow.mmb.question_service.question.entity.Question;
 import com.aoverflow.mmb.question_service.question.repository.QuestionRepository;
 import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +22,9 @@ public class QuestionService {
 
   private final QuestionRepository questionRepository;
   private final MemberServiceClient memberServiceClient;
+
+  private static final int DEFAULT_PAGE_SIZE = 10;
+  private static final int MAX_PAGE_SIZE = 1000;
 
   /**
    * 질문 단건 조회
@@ -34,11 +37,36 @@ public class QuestionService {
   }
 
   /**
-   * 질문 전체 조회
+   * 질문 목록 조회
    */
-  public Page<QuestionDto> getAll(Pageable pageable) {
-    return questionRepository.findAll(pageable)
-        .map(QuestionDto::from);
+  public QuestionPageDto<QuestionDto> getPaginatedList(Long id, int size) {
+    int validSize = (size <= 0) ? DEFAULT_PAGE_SIZE : Math.min(size, MAX_PAGE_SIZE);
+
+    List<Question> questions = questionRepository.findAfterIdOrderByIdDesc(id, validSize + 1);  // hasNext 판단을 위해 +1 하기.
+
+    boolean hasNext = questions.size() > validSize;
+    if (hasNext) {
+      questions.remove(validSize);
+    }
+
+    List<QuestionDto> questionDtoList = questions.stream()
+        .map(QuestionDto::from)
+        .toList();
+
+    Long lastId = null;
+    if (!questions.isEmpty()) {
+      lastId = questions.getLast().getId();
+    }
+
+    Long totalElements = questionRepository.count();
+
+    return QuestionPageDto.<QuestionDto>builder()
+        .questions(questionDtoList)
+        .hasNext(hasNext)
+        .lastId(lastId)
+        .totalElements(totalElements)
+        .pageSize(questions.size())
+        .build();
   }
 
   /**

@@ -1,17 +1,13 @@
 package com.aoverflow.mmb.question_service.question.controller;
 
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
-import com.aoverflow.mmb.question_service.question.dto.QuestionCustomPageDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
 import com.aoverflow.mmb.question_service.question.service.QuestionService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,16 +33,11 @@ public class QuestionController {
   }
 
   @GetMapping
-  public ResponseEntity<QuestionCustomPageDto<QuestionDto>> getAll(
-      @PageableDefault(
-          page = 0,
-          size = 10,
-          sort = {"id"},
-          direction = Direction.DESC
-      ) Pageable pageable
+  public ResponseEntity<QuestionPageDto<QuestionDto>> getPaginatedList(
+      @RequestParam(required = false) Long lastId,
+      @RequestParam(defaultValue = "10") int size
   ) {
-    Page<QuestionDto> page = questionService.getAll(pageable);
-    return ResponseEntity.ok(QuestionCustomPageDto.from(page));
+    return ResponseEntity.ok(questionService.getPaginatedList(lastId, size));
   }
 
   @PostMapping
