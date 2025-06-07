@@ -6,6 +6,7 @@ import static com.aoverflow.mmb.question_service.question.entity.QQuestion.quest
 import static com.aoverflow.mmb.question_service.question.entity.QQuestionHashtag.questionHashtag;
 
 import com.aoverflow.mmb.question_service.question.entity.Question;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,22 @@ import lombok.RequiredArgsConstructor;
 public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
 
   private final JPAQueryFactory queryFactory;
+
+  @Override
+  public List<Question> findAfterIdOrderByIdDesc(Long id, int size) {
+    BooleanBuilder builder = new BooleanBuilder();
+
+    if (id != null) {
+      builder.and(question.id.lt(id));
+    }
+
+    return queryFactory
+        .selectFrom(question)
+        .where(builder)
+        .orderBy(question.id.desc())
+        .limit(size)
+        .fetch();
+  }
 
   @Override
   public List<Question> findByAnswerAuthor(String author) {
