@@ -35,9 +35,10 @@ public class QuestionController {
   @GetMapping
   public ResponseEntity<QuestionPageDto<QuestionDto>> getPaginatedList(
       @RequestParam(required = false) Long lastId,
-      @RequestParam(defaultValue = "10") int size
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(required = false) Long authorId
   ) {
-    return ResponseEntity.ok(questionService.getPaginatedList(lastId, size));
+    return ResponseEntity.ok(questionService.getPaginatedList(lastId, size, authorId));
   }
 
   @PostMapping

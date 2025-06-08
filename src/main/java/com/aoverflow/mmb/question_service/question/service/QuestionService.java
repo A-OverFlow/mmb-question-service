@@ -39,10 +39,10 @@ public class QuestionService {
   /**
    * 질문 목록 조회
    */
-  public QuestionPageDto<QuestionDto> getPaginatedList(Long id, int size) {
+  public QuestionPageDto<QuestionDto> getPaginatedList(Long id, int size, Long authorId) {
     int validSize = (size <= 0) ? DEFAULT_PAGE_SIZE : Math.min(size, MAX_PAGE_SIZE);
 
-    List<Question> questions = questionRepository.findAfterIdOrderByIdDesc(id, validSize + 1);  // hasNext 판단을 위해 +1 하기.
+    List<Question> questions = questionRepository.findByPageAndFiltersOrderByIdDesc(id, validSize + 1, authorId);  // hasNext 판단을 위해 validSize + 1 하기.
 
     boolean hasNext = questions.size() > validSize;
     if (hasNext) {
@@ -58,7 +58,7 @@ public class QuestionService {
       lastId = questions.getLast().getId();
     }
 
-    Long totalElements = questionRepository.count();
+    Long totalElements = questionRepository.countByAuthorId(authorId);
 
     return QuestionPageDto.<QuestionDto>builder()
         .questions(questionDtoList)

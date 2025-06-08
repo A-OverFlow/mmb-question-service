@@ -17,11 +17,15 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public List<Question> findAfterIdOrderByIdDesc(Long id, int size) {
+  public List<Question> findByPageAndFiltersOrderByIdDesc(Long id, int size, Long authorId) {
     BooleanBuilder builder = new BooleanBuilder();
 
     if (id != null) {
       builder.and(question.id.lt(id));
+    }
+
+    if (authorId != null) {
+      builder.and(question.authorId.eq(authorId));
     }
 
     return queryFactory
@@ -66,5 +70,20 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
         .on(questionHashtag.hashtag.eq(hashtag))
         .where(hashtag.name.eq(name))
         .fetch();
+  }
+
+  @Override
+  public Long countByAuthorId(Long authorId) {
+    BooleanBuilder builder = new BooleanBuilder();
+
+    if (authorId != null) {
+      builder.and(question.authorId.eq(authorId));
+    }
+
+    return queryFactory
+        .select(question.count())
+        .from(question)
+        .where(builder)
+        .fetchOne();
   }
 }
