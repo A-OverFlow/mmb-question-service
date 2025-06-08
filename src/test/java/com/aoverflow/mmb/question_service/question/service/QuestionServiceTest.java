@@ -102,9 +102,9 @@ class QuestionServiceTest {
     }
 
     // when
-    QuestionPageDto<QuestionDto> page = questionService.getPaginatedList(null, PAGE_SIZE);
-    QuestionPageDto<QuestionDto> wrongRequestPage1 = questionService.getPaginatedList(null, NEGATIVE_PAGE_SIZE);
-    QuestionPageDto<QuestionDto> wrongRequestPage2 = questionService.getPaginatedList(null, ABUSIVE_PAGE_SIZE);
+    QuestionPageDto<QuestionDto> page = questionService.getPaginatedList(null, PAGE_SIZE, null);
+    QuestionPageDto<QuestionDto> wrongRequestPage1 = questionService.getPaginatedList(null, NEGATIVE_PAGE_SIZE, null);
+    QuestionPageDto<QuestionDto> wrongRequestPage2 = questionService.getPaginatedList(null, ABUSIVE_PAGE_SIZE, null);
 
     // then
     List<QuestionDto> content = page.getQuestions();    // 조회된 데이터
