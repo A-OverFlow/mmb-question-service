@@ -128,7 +128,7 @@ class QuestionRepositoryTest {
     String subject = savedQuestion.getSubject();
 
     // when
-    question.update(QuestionUpdateDto.from(savedQuestion.getId(), "수정한 제목", QUESTION_CONTENT));
+    question.update(QuestionUpdateDto.from("수정한 제목", QUESTION_CONTENT));
     questionRepository.save(question);
 
     // then
@@ -150,7 +150,7 @@ class QuestionRepositoryTest {
     String content = savedQuestion.getContent();
 
     // when
-    question.update(QuestionUpdateDto.from(savedQuestion.getId(), QUESTION_SUBJECT, "수정한 내용"));
+    question.update(QuestionUpdateDto.from(QUESTION_SUBJECT, "수정한 내용"));
     questionRepository.save(question);
 
     // then

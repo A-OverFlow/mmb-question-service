@@ -47,10 +47,10 @@ public class QuestionController {
     return ResponseEntity.created(URI.create("/questions/" + createdQuestionDto.getId())).body(createdQuestionDto);
   }
 
-  @PutMapping
-  public ResponseEntity<QuestionDto> update(@Valid @RequestBody QuestionUpdateDto questionUpdateDto) {
-    questionService.update(questionUpdateDto);
-    return ResponseEntity.ok(questionService.get(questionUpdateDto.getId()));
+  @PutMapping("/{id}")
+  public ResponseEntity<QuestionDto> update(@PathVariable("id") Long id, @Valid @RequestBody QuestionUpdateDto questionUpdateDto) {
+    questionService.update(id, questionUpdateDto);
+    return ResponseEntity.ok(questionService.get(id));
   }
 
   @DeleteMapping("/{id}")

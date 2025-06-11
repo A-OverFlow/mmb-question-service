@@ -163,18 +163,17 @@ class QuestionServiceTest {
     QuestionDto createdQuestionDto = questionService.create(QUESTION_AUTHOR_ID, questionCreateDto);
 
     QuestionUpdateDto questionUpdateDto = QuestionUpdateDto.from(
-        createdQuestionDto.getId(),
         "수정한 제목",
         "수정한 내용"
     );
 
     // when
-    questionService.update(questionUpdateDto);
+    questionService.update(createdQuestionDto.getId(), questionUpdateDto);
 
     // then
     em.flush();
     em.clear();
-    QuestionDto updatedQuestionDto = questionService.get(questionUpdateDto.getId());
+    QuestionDto updatedQuestionDto = questionService.get(createdQuestionDto.getId());
 
     assertEquals(createdQuestionDto.getId(), updatedQuestionDto.getId());
     assertNotEquals(createdQuestionDto.getSubject(), updatedQuestionDto.getSubject());
