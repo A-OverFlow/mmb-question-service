@@ -1,5 +1,6 @@
 package com.aoverflow.mmb.question_service.question.controller;
 
+import com.aoverflow.mmb.question_service.question.dto.QuestionCountDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
@@ -57,5 +58,10 @@ public class QuestionController {
   public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     questionService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/count")
+  public ResponseEntity<QuestionCountDto> getCount() {
+    return ResponseEntity.ok(questionService.getCount());
   }
 }

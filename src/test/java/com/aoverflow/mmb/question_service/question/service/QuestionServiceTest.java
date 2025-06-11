@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.given;
 
 import com.aoverflow.mmb.question_service.common.feignClients.MemberServiceClient;
 import com.aoverflow.mmb.question_service.member.dto.MemberDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionCountDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
@@ -200,5 +201,25 @@ class QuestionServiceTest {
         () -> questionService.get(createdQuestionDto.getId()));
     assertThrows(EntityNotFoundException.class,
         () -> questionService.delete(createdQuestionDto.getId()));
+  }
+
+  @Test
+  @DisplayName("질문 총 개수 조회")
+  void getCount() {
+    // given
+    for (int i = 0; i < 10; i++) {
+      QuestionCreateDto questionCreateDto = QuestionCreateDto.from(
+          QUESTION_SUBJECT + i,
+          QUESTION_CONTENT + i
+      );
+      mockAuthorFound(i);
+      questionService.create(QUESTION_AUTHOR_ID + i, questionCreateDto);
+    }
+
+    // when
+    QuestionCountDto countedResult = questionService.getCount();
+
+    // then
+    assertEquals(10, countedResult.getCount());
   }
 }
