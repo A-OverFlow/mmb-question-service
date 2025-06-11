@@ -2,6 +2,7 @@ package com.aoverflow.mmb.question_service.question.service;
 
 import com.aoverflow.mmb.question_service.common.feignClients.MemberServiceClient;
 import com.aoverflow.mmb.question_service.member.dto.MemberDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionCountDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
@@ -107,5 +108,12 @@ public class QuestionService {
     questionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
     questionRepository.deleteById(id);
+  }
+
+  /**
+   * 질문 총 개수 조회
+   */
+  public QuestionCountDto getCount() {
+    return QuestionCountDto.from(questionRepository.count());
   }
 }
