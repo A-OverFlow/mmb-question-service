@@ -82,7 +82,7 @@ public class QuestionService {
       throw new EntityNotFoundException("작성자를 찾을 수 없음. Id: " + authorId);
     }
 
-    Question savedQuestion = questionRepository.save(Question.of(authorId, author.getNickname(), questionCreateDto));
+    Question savedQuestion = questionRepository.save(Question.of(authorId, author.getNickname(), author.getPicture(), questionCreateDto));
 
     return QuestionDto.from(savedQuestion);
   }
