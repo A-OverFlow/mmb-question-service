@@ -90,8 +90,8 @@ public class QuestionService {
    * 질문 수정
    */
   @Transactional
-  public QuestionDto update(QuestionUpdateDto questionUpdateDto) {
-    Question question = questionRepository.findById(questionUpdateDto.getId())
+  public QuestionDto update(Long id, QuestionUpdateDto questionUpdateDto) {
+    Question question = questionRepository.findById(id)
         .orElseThrow(EntityNotFoundException::new);
 
     question.update(questionUpdateDto);
