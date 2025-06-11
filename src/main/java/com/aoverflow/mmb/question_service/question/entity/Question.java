@@ -31,10 +31,13 @@ public class Question extends BaseEntity {
   private Long id;
 
   private String subject;
+
+  @Column(columnDefinition = "TEXT")
   private String content;
 
   private Long authorId;
   private String authorNickname;
+  private String authorPicture;
 
   @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Answer> answers = new ArrayList<>();
@@ -59,28 +62,31 @@ public class Question extends BaseEntity {
   }
 
   @Builder
-  public Question(String subject, String content, Long authorId, String authorNickname) {
+  public Question(String subject, String content, Long authorId, String authorNickname, String authorPicture) {
     this.subject = subject;
     this.content = content;
     this.authorId = authorId;
     this.authorNickname = authorNickname;
+    this.authorPicture = authorPicture;
   }
 
-  public static Question of(String subject, String content, Long authorId, String authorNickname) {
+  public static Question of(String subject, String content, Long authorId, String authorNickname, String authorPicture) {
     return Question.builder()
         .subject(subject)
         .content(content)
         .authorId(authorId)
         .authorNickname(authorNickname)
+        .authorPicture(authorPicture)
         .build();
   }
 
-  public static Question of(Long authorId, String authorNickname, QuestionCreateDto questionCreateDto) {
+  public static Question of(Long authorId, String authorNickname, String authorPicture, QuestionCreateDto questionCreateDto) {
     return Question.builder()
         .subject(questionCreateDto.getSubject())
         .content(questionCreateDto.getContent())
         .authorId(authorId)
         .authorNickname(authorNickname)
+        .authorPicture(authorPicture)
         .build();
   }
 

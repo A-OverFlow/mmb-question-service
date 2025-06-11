@@ -31,6 +31,7 @@ class QuestionRepositoryTest {
   private final static String QUESTION_CONTENT = "더미 질문 내용";
   private final static Long QUESTION_AUTHOR_ID = 1L;
   private final static String QUESTION_AUTHOR_NICKNAME = "더미 질문 작성자";
+  private final static String QUESTION_AUTHOR_PICTURE = "images/profiles/01JWTWGSHTEM6QRN8VRMJN77NH";
 
   private void saveList() {
     questionRepository.deleteAll();
@@ -47,19 +48,23 @@ class QuestionRepositoryTest {
     // member1: 5개 질문
     for (int i = 1; i <= 5; i++) {
       questionRepository.save(Question.of(
-          QUESTION_SUBJECT + i,
-          QUESTION_CONTENT + i,
-          member1.getId(),
-          member1.getNickname())
+              QUESTION_SUBJECT + i,
+              QUESTION_CONTENT + i,
+              member1.getId(),
+              member1.getNickname(),
+              member1.getPicture()
+          )
       );
     }
     // member2: 3개 질문
     for (int i = 6; i <= 8; i++) {
       questionRepository.save(Question.of(
-          QUESTION_SUBJECT + i,
-          QUESTION_CONTENT + i,
-          member2.getId(),
-          member2.getNickname())
+              QUESTION_SUBJECT + i,
+              QUESTION_CONTENT + i,
+              member2.getId(),
+              member2.getNickname(),
+              member2.getPicture()
+          )
       );
     }
   }
@@ -105,7 +110,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_생성() {
     // given
-    Question question = Question.of("질문 있습니다!", "이게 질문입니다.", 123L, "작성자");
+    Question question = Question.of("질문 있습니다!", "이게 질문입니다.", 123L, "images/profiles/01JWTWGSHTEM6QRN8VRMJN77NH", "작성자");
 
     // when
     Question savedQuestion = questionRepository.save(question);
@@ -123,7 +128,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_제목_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NICKNAME);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NICKNAME, QUESTION_AUTHOR_PICTURE);
     Question savedQuestion = questionRepository.save(question);
     String subject = savedQuestion.getSubject();
 
@@ -145,7 +150,7 @@ class QuestionRepositoryTest {
   @Test
   public void 질문_내용_수정() {
     // given
-    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NICKNAME);
+    Question question = Question.of(QUESTION_SUBJECT, QUESTION_CONTENT, QUESTION_AUTHOR_ID, QUESTION_AUTHOR_NICKNAME, QUESTION_AUTHOR_PICTURE);
     Question savedQuestion = questionRepository.save(question);
     String content = savedQuestion.getContent();
 
