@@ -13,10 +13,10 @@ services:
       - db
     restart: always
     logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+        driver: fluentd
+        options:
+            fluentd-address: localhost:24224
+            tag: mmb-question-service
   # db 컨테이너만 실행 : docker compose up -d db
   db:
     image: mysql:8
