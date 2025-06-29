@@ -4,6 +4,9 @@ server:
 
 # 스프링 부트 설정
 spring:
+  application:
+    name: ${APPLICATION_NAME:mmb-member-question}
+
   datasource:
     # 데이터베이스 접속 URL
     # ${}는 환경 변수 값 또는 기본 값을 사용 (없으면 기본값 사용)
@@ -30,6 +33,8 @@ spring:
 
 # 로깅 레벨 설정
 logging:
+  pattern:
+    console: "%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}  %-5level --- [%X{APPLICATION_NAME}] [traceId=%X{traceId:-}, spanId=%X{spanId:-}] %logger{36} : %msg%n"
   level:
     # 전체 애플리케이션의 기본 로그 레벨 (info, debug, warn, error 등)
     root: ${LOG_ROOT_LEVEL:info}
@@ -37,3 +42,11 @@ logging:
     org.springframework.web: ${LOG_WEB_LEVEL:debug}
     # 애플리케이션 패키지(com.demo) 관련 로그 레벨
     com.demo: ${LOG_APP_LEVEL:debug}
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:mmb-zipkin}:${CONTAINER_ZIPKIN_PORT:9411}/api/v2/spans
