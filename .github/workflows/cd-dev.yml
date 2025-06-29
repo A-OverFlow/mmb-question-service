@@ -86,6 +86,9 @@ jobs:
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
           echo "DB_ROOT_PASSWORD=${{ secrets.DB_ROOT_PASSWORD }}" >> .env
+          echo "ZIPKIN_NAME=${{ vars.ZIPKIN_NAME }}" >> .env
+          echo "ZIPKIN_HOST=${{ vars.ZIPKIN_HOST }}" >> .env
+          echo "CONTAINER_ZIPKIN_PORT=${{ vars.CONTAINER_ZIPKIN_PORT }}" >> .env
 
       - name: 생성한 .env 파일 EC2 서버로 복사
         run: |
