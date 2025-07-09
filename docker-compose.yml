@@ -1,0 +1,71 @@
+# 개발 서버 배포 설정
+services:
+  app:
+    image: ${DOCKER_IMAGE}:IMAGE_TAG_PLACEHOLDER
+    container_name: ${APPLICATION_NAME}
+    env_file:
+      - .env
+    ports:
+      - "${SERVICE_PORT}:${SERVICE_PORT}"
+    networks:
+      - external-net
+    depends_on:
+      - db
+      - kafka
+    restart: always
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: mmb-question-service
+
+  # db 컨테이너만 실행 : docker compose up -d db
+  db:
+    image: mysql:8
+    container_name: ${APPLICATION_NAME}-mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      TZ: Asia/Seoul
+    ports:
+      - "${HOST_DB_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - external-net
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - external-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - external-net
+
+volumes:
+  mysql_data:
+
+networks:
+  external-net:
+    external: true
+    name: ${MMB_DOCKER_NETWORK}

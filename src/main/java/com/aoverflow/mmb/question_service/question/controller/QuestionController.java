@@ -1,0 +1,67 @@
+package com.aoverflow.mmb.question_service.question.controller;
+
+import com.aoverflow.mmb.question_service.question.dto.QuestionCountDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
+import com.aoverflow.mmb.question_service.question.service.QuestionService;
+import jakarta.validation.Valid;
+import java.net.URI;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/v1/questions")
+@RequiredArgsConstructor
+public class QuestionController {
+
+  private final QuestionService questionService;
+
+  @GetMapping("/{id}")
+  public ResponseEntity<QuestionDto> get(@PathVariable("id") Long id) {
+    return ResponseEntity.ok(questionService.get(id));
+  }
+
+  @GetMapping
+  public ResponseEntity<QuestionPageDto<QuestionDto>> getPaginatedList(
+      @RequestParam(required = false) Long lastId,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(required = false) Long authorId
+  ) {
+    return ResponseEntity.ok(questionService.getPaginatedList(lastId, size, authorId));
+  }
+
+  @PostMapping
+  public ResponseEntity<QuestionDto> create(@RequestHeader("X-User-Id") Long authorId, @Valid @RequestBody QuestionCreateDto questionCreateDto) {
+    QuestionDto createdQuestionDto = questionService.create(authorId, questionCreateDto);
+    return ResponseEntity.created(URI.create("/questions/" + createdQuestionDto.getId())).body(createdQuestionDto);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<QuestionDto> update(@PathVariable("id") Long id, @Valid @RequestBody QuestionUpdateDto questionUpdateDto) {
+    questionService.update(id, questionUpdateDto);
+    return ResponseEntity.ok(questionService.get(id));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+    questionService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/count")
+  public ResponseEntity<QuestionCountDto> getCount() {
+    return ResponseEntity.ok(questionService.getCount());
+  }
+}
