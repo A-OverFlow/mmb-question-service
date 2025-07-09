@@ -4,11 +4,16 @@ import com.aoverflow.mmb.question_service.common.feignClients.MemberServiceClien
 import com.aoverflow.mmb.question_service.member.dto.MemberDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCountDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionCreateDto;
+import com.aoverflow.mmb.question_service.question.dto.QuestionCreatedEvent;
 import com.aoverflow.mmb.question_service.question.dto.QuestionDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionPageDto;
 import com.aoverflow.mmb.question_service.question.dto.QuestionUpdateDto;
+import com.aoverflow.mmb.question_service.question.entity.MessageOutbox;
 import com.aoverflow.mmb.question_service.question.entity.Question;
+import com.aoverflow.mmb.question_service.question.repository.MessageOutboxRepository;
 import com.aoverflow.mmb.question_service.question.repository.QuestionRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
@@ -22,10 +27,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class QuestionService {
 
   private final QuestionRepository questionRepository;
+  private final MessageOutboxRepository messageOutboxRepository;
   private final MemberServiceClient memberServiceClient;
+  private final ObjectMapper objectMapper;
 
   private static final int DEFAULT_PAGE_SIZE = 10;
   private static final int MAX_PAGE_SIZE = 1000;
+
+  private static final String TOPIC = "question.created";
 
   /**
    * 질문 단건 조회
@@ -83,6 +92,22 @@ public class QuestionService {
     }
 
     Question savedQuestion = questionRepository.save(Question.of(authorId, author.getNickname(), author.getPicture(), questionCreateDto));
+
+    QuestionCreatedEvent event = QuestionCreatedEvent.builder()
+        .questionId(savedQuestion.getId())
+        .authorId(savedQuestion.getAuthorId())
+        .subject(savedQuestion.getSubject())
+        .build();
+    try {
+      String payload = objectMapper.writeValueAsString(event);
+      MessageOutbox message = MessageOutbox.builder()
+          .topic(TOPIC)
+          .payload(payload)
+          .build();
+      messageOutboxRepository.save(message);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
 
     return QuestionDto.from(savedQuestion);
   }

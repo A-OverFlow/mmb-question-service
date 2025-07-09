@@ -31,6 +31,16 @@ spring:
         # 사용할 데이터베이스 방언 설정 (MariaDB용)
         dialect: org.hibernate.dialect.MariaDBDialect
 
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: mmb-question-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
 # 로깅 레벨 설정
 logging:
   pattern:
